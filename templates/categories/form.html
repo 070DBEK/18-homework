@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Add/Edit Category - E-commerce Admin Panel{% endblock %}
+
+{% block header_title %}Add/Edit Category{% endblock %}
+
+{% block content %}
+
+<div class="bg-white p-6 rounded-lg shadow-md animate-fadeIn">
+
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" class="space-y-4" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="flex justify-end space-x-4">
+            <a href="{% url 'categories:list' %}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200">Cancel</a>
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">Save Category</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

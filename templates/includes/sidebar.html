@@ -1,0 +1,12 @@
+
+<aside class="w-64 bg-indigo-600 text-white p-6 hidden md:block">
+    <nav>
+        <h1 class="text-2xl font-bold mb-8">Admin Panel</h1>
+        <ul class="space-y-4">
+            <li><a href="{% url 'home' %}" class="block py-2 px-4 rounded bg-indigo-700 transition-colors duration-200"><i class="fas fa-chart-line mr-2"></i>Dashboard</a></li>
+            <li><a href="{% url 'categories:list' %}" class="block py-2 px-4 rounded hover:bg-indigo-700 transition-colors duration-200"><i class="fas fa-list mr-2"></i>Categories</a></li>
+            <li><a href="{% url 'products:list' %}" class="block py-2 px-4 rounded hover:bg-indigo-700 transition-colors duration-200"><i class="fas fa-box mr-2"></i>Products</a></li>
+            <li><a href="{% url 'home' %}" class="block py-2 px-4 rounded hover:bg-indigo-700 transition-colors duration-200"><i class="fas fa-shopping-cart mr-2"></i>Orders</a></li>
+        </ul>
+    </nav>
+</aside>

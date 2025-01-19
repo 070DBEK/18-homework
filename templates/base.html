@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories - E-commerce Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+    {% block styles %}
+
+    {% endblock %}
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+    <div class="flex h-screen">
+        <!-- SIDEBAR -->
+        {% include 'includes/sidebar.html' %}
+
+        <main class="flex-1 p-8 overflow-y-auto">
+            <header class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">{% block header_title %}{% endblock %}</h2>
+                <button class="md:hidden bg-indigo-600 text-white p-2 rounded" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </header>
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('aside');
+            sidebar.classList.toggle('hidden');
+        }
+    </script>
+
+    {% block scripts %}
+
+    {% endblock %}
+
+</body>
+</html>

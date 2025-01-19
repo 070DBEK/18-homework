@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - E-commerce Admin Panel{% endblock %}
+
+{% block header_title %}Products{% endblock %}
+
+{% block content %}
+
+<!-- Product List Controls -->
+<div class="bg-white p-6 rounded-lg shadow-md mb-8 animate-fadeIn">
+    <div class="flex flex-wrap gap-4 items-center justify-between">
+        <div class="flex flex-wrap gap-4 items-center">
+            <form method="GET" action="{% url 'products:list' %}" class="flex gap-4">
+                <input type="text" name="search" placeholder="Search products" class="border p-2 rounded">
+                <select name="category" class="border p-2 rounded">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">
+                    <i class="fas fa-search mr-2"></i>Search
+                </button>
+            </form>
+        </div>
+        <div class="flex gap-4 items-center">
+            <select class="border p-2 rounded">
+                <option>Sort by: Name</option>
+                <option>Sort by: Price (Low to High)</option>
+                <option>Sort by: Price (High to Low)</option>
+            </select>
+            <a href="{% url 'products:create' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200">
+                <i class="fas fa-plus mr-2"></i>Add Product
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Product List -->
+<div class="bg-white p-6 rounded-lg shadow-md animate-fadeIn">
+    <table class="w-full">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="p-2 text-left">ID</th>
+                <th class="p-2 text-left">Name</th>
+                <th class="p-2 text-left">Category</th>
+                <th class="p-2 text-left">Price</th>
+                <th class="p-2 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr class="border-b">
+                <td class="p-2">{{ product.id }}</td>
+                <td class="p-2">{{ product.name }}</td>
+                <td class="p-2">{{ product.category.name }}</td>
+                <td class="p-2">${{ product.price }}</td>
+                <td class="p-2">
+                    <a href="{% url 'products:detail' product.id %}" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></a>
+                    <a href="{% url 'products:update' product.id %}" class="text-yellow-600 hover:text-yellow-800 mr-2"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'products:delete' product.id %}" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="p-4 text-center text-gray-500">No products found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
