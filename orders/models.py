@@ -10,13 +10,12 @@ class Order(models.Model):
         ('delivered', 'Delivered'),
         ('cancelled', 'Cancelled'),
     ]
-
-    order_id = models.CharField(max_length=100, unique=True)
+    order_id = models.AutoField(primary_key=True)
     customer_name = models.CharField(max_length=200)
     customer_email = models.EmailField()
     customer_phone = models.CharField(max_length=20)
     customer_address = models.TextField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    order_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     order_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -24,7 +23,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, related_name='order_items', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)

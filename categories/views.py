@@ -1,18 +1,52 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Category
-from products.models import Product
+from orders.models import Order, OrderItem
+from django.db.models import Sum
+from django.db.models import Count
 from .forms import CategoryForm
+from django.utils import timezone
 
 
 def home(request):
-    products_count = Product.objects.count()
-    return render(request, 'index.html', {'products_count' : products_count})
+    total_sales = OrderItem.objects.aggregate(total_sales=Sum('price'))['total_sales']
+    total_sales = total_sales if total_sales is not None else 0
+    total_orders = Order.objects.count()
+    last_month = timezone.now() - timezone.timedelta(days=30)
+    new_customers = Order.objects.filter(order_date__gte=last_month).values('customer_name').distinct().count()
+    products_by_category = OrderItem.objects.values('product__category__name').annotate(
+        total_products=Count('product')).order_by('product__category__name')
+    categories = [item['product__category__name'] for item in products_by_category]
+    product_counts = [item['total_products'] for item in products_by_category]
+    context = {
+        'total_sales': total_sales,
+        'total_orders': total_orders,
+        'new_customers': new_customers,
+        'categories': categories,
+        'product_counts': product_counts,
+    }
+    return render(request, 'index.html', context)
 
 
 def category_list(request):
-    categories = Category.objects.all()
-    return render(request, 'categories/list.html', {'categories': categories})
+    search_query = request.GET.get('search', '')
+    if search_query:
+        categories = Category.objects.filter(name__icontains=search_query)
+    else:
+        categories = Category.objects.all()
+    categories_with_count = []
+    for category in categories:
+        products_count = category.product_set.count()
+        categories_with_count.append({
+            'category': category,
+            'products_count': products_count
+        })
+    context = {
+        'categories_with_count': categories_with_count,
+        'search_query': search_query,
+    }
+    return render(request, 'categories/list.html', context)
+
 
 def create_category(request):
     if request.method == 'POST':

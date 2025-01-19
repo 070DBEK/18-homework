@@ -10,17 +10,17 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
             <h3 class="text-xl font-semibold mb-4">Order Information</h3>
-            <p><strong>Order ID:</strong> #12345</p>
-            <p><strong>Date:</strong> 2023-06-01</p>
-            <p><strong>Status:</strong> <span class="bg-green-200 text-green-800 py-1 px-2 rounded-full text-sm">Completed</span></p>
-            <p><strong>Total:</strong> $99.99</p>
+            <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+            <p><strong>Date:</strong> {{ order.order_date }}</p>
+            <p><strong>Status:</strong> <span class="bg-{{ order.status_class }}-200 text-{{ order.status_class }}-800 py-1 px-2 rounded-full text-sm">{{ order.get_status_display }}</span></p>
+            <p><strong>Total:</strong> ${{ order.get_total_price }}</p>
         </div>
         <div>
             <h3 class="text-xl font-semibold mb-4">Customer Information</h3>
-            <p><strong>Name:</strong> John Doe</p>
-            <p><strong>Email:</strong> john.doe@example.com</p>
-            <p><strong>Phone:</strong> +1 234 567 8900</p>
-            <p><strong>Address:</strong> 123 Main St, Anytown, AN 12345</p>
+            <p><strong>Name:</strong> {{ order.customer_name }}</p>
+            <p><strong>Email:</strong> {{ order.customer_email }}</p>
+            <p><strong>Phone:</strong> {{ order.customer_phone }}</p>
+            <p><strong>Address:</strong> {{ order.customer_address }}</p>
         </div>
     </div>
 
@@ -35,36 +35,31 @@
             </tr>
         </thead>
         <tbody>
+            {% for item in order.items.all %}
             <tr class="border-b">
-                <td class="p-2">Product A</td>
-                <td class="p-2">2</td>
-                <td class="p-2">$29.99</td>
-                <td class="p-2">$59.98</td>
+                <td class="p-2">{{ item.product }}</td>
+                <td class="p-2">{{ item.quantity }}</td>
+                <td class="p-2">${{ item.price }}</td>
+                <td class="p-2">${{ item.total_price }}</td> <!-- Assuming total_price is a method in the OrderItem model -->
             </tr>
-            <tr>
-                <td class="p-2">Product B</td>
-                <td class="p-2">1</td>
-                <td class="p-2">$39.99</td>
-                <td class="p-2">$39.99</td>
-            </tr>
+            {% endfor %}
         </tbody>
         <tfoot>
             <tr class="font-bold">
                 <td colspan="3" class="p-2 text-right">Total:</td>
-                <td class="p-2">$99.97</td>
+                <td class="p-2">${{ order.get_total_price }}</td>
             </tr>
         </tfoot>
     </table>
 
     <div class="mt-8 flex justify-end space-x-4">
-        <a href="form.html" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors duration-200">
+        <a href="{% url 'orders:update' order.pk %}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors duration-200">
             <i class="fas fa-edit mr-2"></i>Edit Order
         </a>
-        <a href="list.html" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors duration-200">
+        <a href="{% url 'orders:list' %}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors duration-200">
             <i class="fas fa-arrow-left mr-2"></i>Back to List
         </a>
     </div>
 </div>
 
 {% endblock %}
-

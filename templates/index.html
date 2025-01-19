@@ -21,17 +21,17 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-6 rounded-lg shadow-md transition-transform hover:scale-105">
             <h3 class="text-xl font-semibold mb-4 text-gray-700">Total Sales</h3>
-            <p class="text-3xl font-bold text-indigo-600">$24,500</p>
+            <p class="text-3xl font-bold text-indigo-600">${{ total_sales }}</p>
             <p class="text-sm text-gray-500 mt-2">+12% from last month</p>
         </div>
         <div class="bg-white p-6 rounded-lg shadow-md transition-transform hover:scale-105">
             <h3 class="text-xl font-semibold mb-4 text-gray-700">Total Orders</h3>
-            <p class="text-3xl font-bold text-indigo-600">356</p>
+            <p class="text-3xl font-bold text-indigo-600">{{ total_orders }}</p>
             <p class="text-sm text-gray-500 mt-2">+5% from last month</p>
         </div>
         <div class="bg-white p-6 rounded-lg shadow-md transition-transform hover:scale-105">
             <h3 class="text-xl font-semibold mb-4 text-gray-700">New Customers</h3>
-            <p class="text-3xl font-bold text-indigo-600">78</p>
+            <p class="text-3xl font-bold text-indigo-600">{{ new_customers }}</p>
             <p class="text-sm text-gray-500 mt-2">+18% from last month</p>
         </div>
     </div>
@@ -58,27 +58,23 @@
                 </tr>
             </thead>
             <tbody>
+                {% for order in orders %}
                 <tr class="border-b">
-                    <td class="p-2">#12345</td>
-                    <td class="p-2">John Doe</td>
-                    <td class="p-2">2023-05-15</td>
-                    <td class="p-2">$699</td>
-                    <td class="p-2"><span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-sm">Pending</span></td>
+                    <td class="p-2">#{{ order.id }}</td>
+                    <td class="p-2">{{ order.customer_name }}</td>
+                    <td class="p-2">{{ order.order_date }}</td>
+                    <td class="p-2">${{ order.total_price }}</td>
+                    <td class="p-2">
+                        {% if order.status == 'Pending' %}
+                            <span class="bg-yellow-200 text-yellow-800 px-2 py-1 rounded text-sm">Pending</span>
+                        {% elif order.status == 'Delivered' %}
+                            <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-sm">Delivered</span>
+                        {% elif order.status == 'Shipped' %}
+                            <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded text-sm">Shipped</span>
+                        {% endif %}
+                    </td>
                 </tr>
-                <tr class="border-b">
-                    <td class="p-2">#12346</td>
-                    <td class="p-2">Jane Smith</td>
-                    <td class="p-2">2023-05-14</td>
-                    <td class="p-2">$129</td>
-                    <td class="p-2"><span class="bg-green-200 text-green-800 px-2 py-1 rounded text-sm">Delivered</span></td>
-                </tr>
-                <tr>
-                    <td class="p-2">#12347</td>
-                    <td class="p-2">Bob Johnson</td>
-                    <td class="p-2">2023-05-13</td>
-                    <td class="p-2">$899</td>
-                    <td class="p-2"><span class="bg-blue-200 text-blue-800 px-2 py-1 rounded text-sm">Shipped</span></td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -87,56 +83,63 @@
 {% block scripts %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Fetching the data and charting it
         const ctx = document.getElementById('productsByCategoryChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports', 'Toys'],
-                datasets: [{
-                    label: 'Number of Products',
-                    data: [65, 45, 30, 38, 25, 32],
-                    backgroundColor: [
-                        'rgba(99, 102, 241, 0.8)',  // Indigo (matching the sidebar)
-                        'rgba(99, 102, 241, 0.7)',
-                        'rgba(99, 102, 241, 0.6)',
-                        'rgba(99, 102, 241, 0.5)',
-                        'rgba(99, 102, 241, 0.4)',
-                        'rgba(99, 102, 241, 0.3)'
-                    ],
-                    borderColor: [
-                        'rgb(99, 102, 241)',
-                        'rgb(99, 102, 241)',
-                        'rgb(99, 102, 241)',
-                        'rgb(99, 102, 241)',
-                        'rgb(99, 102, 241)',
-                        'rgb(99, 102, 241)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
+
+        const productsData = {
+            labels: ['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports', 'Toys'],
+            datasets: [{
+                label: 'Number of Products',
+                data: [65, 45, 30, 38, 25, 32],  // Example data: replace with your actual data
+                backgroundColor: [
+                    'rgba(99, 102, 241, 0.8)',  // Indigo (matching the sidebar)
+                    'rgba(99, 102, 241, 0.7)',
+                    'rgba(99, 102, 241, 0.6)',
+                    'rgba(99, 102, 241, 0.5)',
+                    'rgba(99, 102, 241, 0.4)',
+                    'rgba(99, 102, 241, 0.3)'
+                ],
+                borderColor: [
+                    'rgb(99, 102, 241)',
+                    'rgb(99, 102, 241)',
+                    'rgb(99, 102, 241)',
+                    'rgb(99, 102, 241)',
+                    'rgb(99, 102, 241)',
+                    'rgb(99, 102, 241)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
                     }
                 },
-                plugins: {
-                    legend: {
+                x: {
+                    grid: {
                         display: false
                     }
                 }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
             }
+        };
+
+        // Create the chart
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: productsData,
+            options: chartOptions
         });
     </script>
-
 {% endblock %}
+

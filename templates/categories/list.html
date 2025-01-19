@@ -10,10 +10,12 @@
 <div class="bg-white p-6 rounded-lg shadow-md mb-8 animate-fadeIn">
     <div class="flex flex-wrap gap-4 items-center justify-between">
         <div class="flex flex-wrap gap-4 items-center">
-            <input type="text" placeholder="Search categories" class="border p-2 rounded">
-            <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">
-                <i class="fas fa-search mr-2"></i>Search
-            </button>
+            <form method="GET" action="{% url 'categories:list' %}" class="flex gap-4">
+                <input type="text" name="search" placeholder="Search categories" value="{{ search_query }}" class="border p-2 rounded">
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">
+                    <i class="fas fa-search mr-2"></i>Search
+                </button>
+            </form>
         </div>
         <div>
             <a href="{% url 'categories:create' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200">
@@ -35,16 +37,20 @@
             </tr>
         </thead>
         <tbody>
-            {% for category in categories %}
+            {% for item in categories_with_count %}
             <tr class="border-b">
-                <td class="p-2">{{ category.id }}</td>
-                <td class="p-2">{{ category.name }}</td>
-                <td class="p-2">{{ category.products_count }}</td>
+                <td class="p-2">{{ item.category.id }}</td>
+                <td class="p-2">{{ item.category.name }}</td>
+                <td class="p-2">{{ item.products_count }}</td>
                 <td class="p-2">
-                    <a href="{% url 'categories:detail' category.id %}" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></a>
-                    <a href="{% url 'categories:update' category.id %}" class="text-yellow-600 hover:text-yellow-800 mr-2"><i class="fas fa-edit"></i></a>
-                    <a href="{% url 'categories:delete' category.id %}" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
+                    <a href="{% url 'categories:detail' item.category.id %}" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></a>
+                    <a href="{% url 'categories:update' item.category.id %}" class="text-yellow-600 hover:text-yellow-800 mr-2"><i class="fas fa-edit"></i></a>
+                    <a href="{% url 'categories:delete' item.category.id %}" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></a>
                 </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="p-4 text-center text-gray-500">No categories found.</td>
             </tr>
             {% endfor %}
         </tbody>

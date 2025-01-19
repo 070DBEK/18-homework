@@ -1,114 +1,57 @@
 {% extends 'base.html' %}
 
-{% block title %}Edit Order - E-commerce Admin Panel{% endblock %}
+{% block title %}Add/Edit Order - E-commerce Admin Panel{% endblock %}
 
-{% block header_title %}Edit Order{% endblock %}
+{% block header_title %}Add/Edit Order{% endblock %}
 
 {% block content %}
 
 <div class="bg-white p-6 rounded-lg shadow-md animate-fadeIn">
-    <form action="list.html" method="GET">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <h3 class="text-xl font-semibold mb-4">Order Information</h3>
-                <div class="mb-4">
-                    <label for="orderId" class="block text-sm font-medium text-gray-700">Order ID</label>
-                    <input type="text" id="orderId" name="orderId" value="#12345" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" readonly>
+
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <div class="mb-4">
-                    <label for="orderDate" class="block text-sm font-medium text-gray-700">Date</label>
-                    <input type="date" id="orderDate" name="orderDate" value="2023-06-01" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-4">
-                    <label for="orderStatus" class="block text-sm font-medium text-gray-700">Status</label>
-                    <select id="orderStatus" name="orderStatus" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="pending">Pending</option>
-                        <option value="processing">Processing</option>
-                        <option value="shipped">Shipped</option>
-                        <option value="delivered" selected>Delivered</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
-                </div>
-            </div>
-            <div>
-                <h3 class="text-xl font-semibold mb-4">Customer Information</h3>
-                <div class="mb-4">
-                    <label for="customerName" class="block text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" id="customerName" name="customerName" value="John Doe" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-4">
-                    <label for="customerEmail" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="customerEmail" name="customerEmail" value="john.doe@example.com" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-4">
-                    <label for="customerPhone" class="block text-sm font-medium text-gray-700">Phone</label>
-                    <input type="tel" id="customerPhone" name="customerPhone" value="+1 234 567 8900" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div class="mb-4">
-                    <label for="customerAddress" class="block text-sm font-medium text-gray-700">Address</label>
-                    <textarea id="customerAddress" name="customerAddress" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">123 Main St, Anytown, AN 12345</textarea>
-                </div>
-            </div>
+            {% endfor %}
         </div>
+    {% endif %}
 
-        <h3 class="text-xl font-semibold mt-8 mb-4">Order Items</h3>
-        <table class="w-full mb-4">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="p-2 text-left">Product</th>
-                    <th class="p-2 text-left">Quantity</th>
-                    <th class="p-2 text-left">Price</th>
-                    <th class="p-2 text-left">Total</th>
-                    <th class="p-2 text-left">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="border-b">
-                    <td class="p-2">
-                        <input type="text" name="product[]" value="Product A" class="w-full border-gray-300 rounded-md shadow-sm">
-                    </td>
-                    <td class="p-2">
-                        <input type="number" name="quantity[]" value="2" class="w-full border-gray-300 rounded-md shadow-sm">
-                    </td>
-                    <td class="p-2">
-                        <input type="number" name="price[]" value="29.99" step="0.01" class="w-full border-gray-300 rounded-md shadow-sm">
-                    </td>
-                    <td class="p-2">$59.98</td>
-                    <td class="p-2">
-                        <button type="button" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="p-2">
-                        <input type="text" name="product[]" value="Product B" class="w-full border-gray-300 rounded-md shadow-sm">
-                    </td>
-                    <td class="p-2">
-                        <input type="number" name="quantity[]" value="1" class="w-full border-gray-300 rounded-md shadow-sm">
-                    </td>
-                    <td class="p-2">
-                        <input type="number" name="price[]" value="39.99" step="0.01" class="w-full border-gray-300 rounded-md shadow-sm">
-                    </td>
-                    <td class="p-2">$39.99</td>
-                    <td class="p-2">
-                        <button type="button" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <form method="post" class="space-y-4" enctype="multipart/form-data" action="{% if order.pk %}{% url 'orders:update' order.pk %}{% else %}{% url 'orders:create' %}{% endif %}">
+        {% csrf_token %}
+        {{ form.as_p }}
 
-        <button type="button" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200 mb-4">
-            <i class="fas fa-plus mr-2"></i>Add Item
-        </button>
-
-        <div class="mt-8 flex justify-end space-x-4">
-            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">
-                <i class="fas fa-save mr-2"></i>Save Changes
-            </button>
-            <a href="list.html" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors duration-200">
-                <i class="fas fa-times mr-2"></i>Cancel
-            </a>
+        <div class="flex justify-end space-x-4">
+            <a href="{% url 'orders:list' %}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200">Cancel</a>
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">Save Order</button>
         </div>
     </form>
+
+    <h3 class="text-xl font-semibold mt-8 mb-4">Order Items</h3>
+    <table class="w-full">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="p-2 text-left">Product</th>
+                <th class="p-2 text-left">Quantity</th>
+                <th class="p-2 text-left">Price</th>
+                <th class="p-2 text-left">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ item_formset.management_form }}
+            {% for form in item_formset %}
+            <tr>
+                <td>{{ form.product }}</td>
+                <td>{{ form.quantity }}</td>
+                <td>{{ form.price }}</td>
+                <td>{{ form.total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 </div>
 
 {% endblock %}

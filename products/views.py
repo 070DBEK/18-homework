@@ -75,7 +75,6 @@ def update_products(request, pk):
             messages.error(request, 'There was an error updating your product. Please try again.')
     else:
         form = ProductForm(instance=product)
-
     return render(request, 'products/form.html', {'form': form})
 
 

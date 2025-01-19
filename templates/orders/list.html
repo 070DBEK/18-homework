@@ -5,77 +5,66 @@
 {% block header_title %}Orders{% endblock %}
 
 {% block content %}
-    <!-- Order List Controls -->
-    <div class="bg-white p-6 rounded-lg shadow-md mb-8 animate-fadeIn">
-        <div class="flex flex-wrap gap-4 items-center justify-between">
-            <div class="flex flex-wrap gap-4 items-center">
-                <input type="text" placeholder="Search orders" class="border p-2 rounded">
-                <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">
+
+<!-- Order List Controls -->
+<div class="bg-white p-6 rounded-lg shadow-md mb-8 animate-fadeIn">
+    <div class="flex flex-wrap gap-4 items-center justify-between">
+        <div class="flex flex-wrap gap-4 items-center">
+            <form method="GET" action="{% url 'orders:list' %}">
+                <input type="text" name="search" placeholder="Search orders" class="border p-2 rounded" value="{{ request.GET.search }}">
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">
                     <i class="fas fa-search mr-2"></i>Search
                 </button>
-            </div>
-            <div>
-                <select class="border p-2 rounded">
+            </form>
+        </div>
+        <div>
+            <form method="GET" action="{% url 'orders:list' %}">
+                <select name="status" class="border p-2 rounded" onchange="this.form.submit()">
                     <option value="">All Statuses</option>
-                    <option value="pending">Pending</option>
-                    <option value="processing">Processing</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
+                    <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="processing" {% if request.GET.status == 'processing' %}selected{% endif %}>Processing</option>
+                    <option value="shipped" {% if request.GET.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                    <option value="delivered" {% if request.GET.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                    <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
                 </select>
-            </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <!-- Order List -->
-    <div class="bg-white p-6 rounded-lg shadow-md animate-fadeIn">
-        <table class="w-full">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="p-2 text-left">Order ID</th>
-                    <th class="p-2 text-left">Customer</th>
-                    <th class="p-2 text-left">Date</th>
-                    <th class="p-2 text-left">Total</th>
-                    <th class="p-2 text-left">Status</th>
-                    <th class="p-2 text-left">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="border-b">
-                    <td class="p-2">#12345</td>
-                    <td class="p-2">John Doe</td>
-                    <td class="p-2">2023-06-01</td>
-                    <td class="p-2">$99.99</td>
-                    <td class="p-2"><span class="bg-green-200 text-green-800 py-1 px-2 rounded-full text-sm">Completed</span></td>
-                    <td class="p-2">
-                        <a href="detail.html" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></a>
-                        <a href="form.html" class="text-yellow-600 hover:text-yellow-800"><i class="fas fa-edit"></i></a>
-                    </td>
-                </tr>
-                <tr class="border-b">
-                    <td class="p-2">#12346</td>
-                    <td class="p-2">Jane Smith</td>
-                    <td class="p-2">2023-06-02</td>
-                    <td class="p-2">$149.99</td>
-                    <td class="p-2"><span class="bg-yellow-200 text-yellow-800 py-1 px-2 rounded-full text-sm">Processing</span></td>
-                    <td class="p-2">
-                        <a href="detail.html" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></a>
-                        <a href="form.html" class="text-yellow-600 hover:text-yellow-800"><i class="fas fa-edit"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="p-2">#12347</td>
-                    <td class="p-2">Bob Johnson</td>
-                    <td class="p-2">2023-06-03</td>
-                    <td class="p-2">$79.99</td>
-                    <td class="p-2"><span class="bg-blue-200 text-blue-800 py-1 px-2 rounded-full text-sm">Shipped</span></td>
-                    <td class="p-2">
-                        <a href="detail.html" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></a>
-                        <a href="form.html" class="text-yellow-600 hover:text-yellow-800"><i class="fas fa-edit"></i></a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<!-- Order List -->
+<div class="bg-white p-6 rounded-lg shadow-md animate-fadeIn">
+    <table class="w-full">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="p-2 text-left">Order ID</th>
+                <th class="p-2 text-left">Customer</th>
+                <th class="p-2 text-left">Date</th>
+                <th class="p-2 text-left">Total</th>
+                <th class="p-2 text-left">Status</th>
+                <th class="p-2 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr class="border-b">
+                <td class="p-2">{{ order.order_id }}</td>
+                <td class="p-2">{{ order.customer_name }}</td>
+                <td class="p-2">{{ order.order_date }}</td>
+                <td class="p-2">{{ order.get_total_price }}</td> <!-- Assuming there's a method to calculate total price -->
+                <td class="p-2">
+                    <span class="bg-{{ order.status_class }}-200 text-{{ order.status_class }}-800 py-1 px-2 rounded-full text-sm">
+                        {{ order.get_status_display }}
+                    </span>
+                </td>
+                <td class="p-2">
+                    <a href="{% url 'orders:detail' order.pk %}" class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-eye"></i></a>
+                    <a href="{% url 'orders:update' order.pk %}" class="text-yellow-600 hover:text-yellow-800"><i class="fas fa-edit"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}
