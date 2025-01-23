@@ -1,76 +1,76 @@
-{% extends 'base.html' %}
+<!--{% extends 'base.html' %}-->
 
-{% block title %}Add/Edit Order - E-commerce Admin Panel{% endblock %}
+<!--{% block title %}Add/Edit Order - E-commerce Admin Panel{% endblock %}-->
 
-{% block header_title %}Add/Edit Order{% endblock %}
+<!--{% block header_title %}Add/Edit Order{% endblock %}-->
 
-{% block content %}
+<!--{% block content %}-->
 
-<div class="bg-white p-6 rounded-lg shadow-md animate-fadeIn">
+<!--<div class="bg-white p-6 rounded-lg shadow-md animate-fadeIn">-->
 
-    {% if messages %}
-        <div>
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
+<!--    {% if messages %}-->
+<!--        <div>-->
+<!--            {% for message in messages %}-->
+<!--                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">-->
+<!--                    {{ message }}-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--                </div>-->
+<!--            {% endfor %}-->
+<!--        </div>-->
+<!--    {% endif %}-->
 
-    <form method="post" class="space-y-4" enctype="multipart/form-data"
-      action="{% if order.pk %}{% url 'orders:update' order.pk %}{% else %}{% url 'orders:create' %}{% endif %}">
-    {% csrf_token %}
+<!--    <form method="post" class="space-y-4" enctype="multipart/form-data"-->
+<!--      action="{% if order.pk %}{% url 'orders:update' order.pk %}{% else %}{% url 'orders:create' %}{% endif %}">-->
+<!--    {% csrf_token %}-->
 
-    <!-- Render the fields of the OrderForm as paragraphs -->
-    {{ form.as_p }}
+<!--    &lt;!&ndash; Render the fields of the OrderForm as paragraphs &ndash;&gt;-->
+<!--    {{ form.as_p }}-->
 
-    <!-- Buttons for saving or canceling the form -->
-    <div class="flex justify-end space-x-4">
-        <!-- Link to cancel the action and go back to the orders list -->
-        <a href="{% url 'orders:list' %}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200">
-            Cancel
-        </a>
+<!--    &lt;!&ndash; Buttons for saving or canceling the form &ndash;&gt;-->
+<!--    <div class="flex justify-end space-x-4">-->
+<!--        &lt;!&ndash; Link to cancel the action and go back to the orders list &ndash;&gt;-->
+<!--        <a href="{% url 'orders:list' %}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200">-->
+<!--            Cancel-->
+<!--        </a>-->
 
-        <!-- Submit button to save the form -->
-        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">
-            Save Order
-        </button>
-    </div>
-</form>
-    <h3 class="text-xl font-semibold mt-8 mb-4">Order Items</h3>
-    <form method="post">
-        {% csrf_token %}
-        {{ item_formset.management_form }}
+<!--        &lt;!&ndash; Submit button to save the form &ndash;&gt;-->
+<!--        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">-->
+<!--            Save Order-->
+<!--        </button>-->
+<!--    </div>-->
+<!--</form>-->
+<!--    <h3 class="text-xl font-semibold mt-8 mb-4">Order Items</h3>-->
+<!--    <form method="post">-->
+<!--        {% csrf_token %}-->
+<!--        {{ item_formset.management_form }}-->
 
-        <table class="w-full">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="p-2 text-left">Product</th>
-                    <th class="p-2 text-left">Quantity</th>
-                    <th class="p-2 text-left">Price</th>
-                    <th class="p-2 text-left">Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for form in item_formset %}
-                    <tr>
-                        <td>{{ form.product }}</td>
-                        <td>{{ form.quantity }}</td>
-                        <td>{{ product.price }}</td>
-                        <td>{{ form.instance.total }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<!--        <table class="w-full">-->
+<!--            <thead>-->
+<!--                <tr class="bg-gray-100">-->
+<!--                    <th class="p-2 text-left">Product</th>-->
+<!--                    <th class="p-2 text-left">Quantity</th>-->
+<!--                    <th class="p-2 text-left">Price</th>-->
+<!--                    <th class="p-2 text-left">Total</th>-->
+<!--                </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--                {% for form in item_formset %}-->
+<!--                    <tr>-->
+<!--                        <td>{{ form.product }}</td>-->
+<!--                        <td>{{ form.quantity }}</td>-->
+<!--                        <td>{{ product.price }}</td>-->
+<!--                        <td>{{ form.instance.total }}</td>-->
+<!--                    </tr>-->
+<!--                {% endfor %}-->
+<!--            </tbody>-->
+<!--        </table>-->
 
-        <div class="flex justify-end space-x-4 mt-4">
-            <a href="{% url 'orders:list' %}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200">Cancel</a>
-            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">Save Order Items</button>
-        </div>
-    </form>
+<!--        <div class="flex justify-end space-x-4 mt-4">-->
+<!--            <a href="{% url 'orders:list' %}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200">Cancel</a>-->
+<!--            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">Save Order Items</button>-->
+<!--        </div>-->
+<!--    </form>-->
 
-</div>
+<!--</div>-->
 
-{% endblock %}
+<!--{% endblock %}-->
