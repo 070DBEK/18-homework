@@ -15,6 +15,7 @@ class CategoryForm(forms.Form):
         }),
         label="Name",
     )
+
     desc = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
@@ -24,6 +25,7 @@ class CategoryForm(forms.Form):
         }),
         label="Description",
     )
+
     icon = forms.ImageField(
         widget=forms.FileInput(attrs={
             'class': 'block text-sm font-medium text-gray-700',
@@ -44,5 +46,11 @@ class CategoryForm(forms.Form):
         if len(desc) < 10:
             raise ValidationError('Description must be at least 10 characters')
         return desc
+
+    def clean_icon(self):
+        icon_url = self.cleaned_data.get('icon')
+        if not icon_url:
+            raise ValidationError('This field is required.')
+        return icon_url
 
 

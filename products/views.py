@@ -61,21 +61,25 @@ def create_products(request):
 def update_products(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES, instance=product)
+        form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product.name = form.cleaned_data['name']
-            product.desc = form.cleaned_data['desc']
-            product.price = form.cleaned_data['price']
-            product.img = form.cleaned_data['img']
             product.category = form.cleaned_data['category']
+            product.price = form.cleaned_data['price']
+            product.desc = form.cleaned_data['desc']
+            product.img = form.cleaned_data['img']
             product.save()
             messages.success(request, 'Product updated successfully!')
             return redirect('products:list')
-        else:
-            messages.error(request, 'There was an error updating your product. Please try again.')
     else:
-        form = ProductForm(instance=product)
-    return render(request, 'products/form.html', {'form': form})
+        form = ProductForm(initial={
+            'name' : product.name,
+            'category' : product.category,
+            'price' : product.price,
+            'desc' : product.desc,
+            'img' : product.img,
+        })
+        return render(request, 'products/form.html', {'form' : form})
 
 
 def product_detail(request, pk):

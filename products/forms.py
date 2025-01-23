@@ -16,6 +16,7 @@ class ProductForm(forms.Form):
         }),
         label="Name",
     )
+
     category = forms.ModelChoiceField(
         queryset=Category.objects.all(),
         widget=forms.Select(attrs={
@@ -23,6 +24,7 @@ class ProductForm(forms.Form):
         }),
         label="Category",
     )
+
     price = forms.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -32,6 +34,7 @@ class ProductForm(forms.Form):
         }),
         label="Price",
     )
+
     desc = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
@@ -41,12 +44,14 @@ class ProductForm(forms.Form):
         }),
         label="Description",
     )
+
     img = forms.ImageField(
         widget=forms.FileInput(attrs={
             'class': 'block text-sm font-medium text-gray-700',
             'accept': 'image/*',
         }),
         label="Product image",
+        required=False
     )
 
     def clean_name(self):

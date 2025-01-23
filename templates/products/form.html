@@ -12,7 +12,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <div class="flex justify-end space-x-4">
-            <a href="list.html" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200">Cancel</a>
+            <a href="{% url 'products:list' %}" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200">Cancel</a>
             <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition-colors duration-200">Save Product</button>
         </div>
     </form>
